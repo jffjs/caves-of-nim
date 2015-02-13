@@ -5,6 +5,7 @@ type
     exit: bool
     bounds: Rectangle
     player: Actor
+    mobs: seq[Actor]
     
 proc newGame(): Game =
   let
@@ -15,15 +16,21 @@ proc newGame(): Game =
 
   var
     player = newActor(40, 25, '@', WHITE)
-  Game(bounds: bounds, exit: false, player: player)
+    dog = newActor(10, 10, 'd', DARK_AMBER)
+    mobs = @[dog]
+  Game(bounds: bounds, exit: false, player: player, mobs: mobs)
 
 proc render(game: Game) =
   consoleClear(nil)
   game.player.render()
+  for m in game.mobs:
+    m.render()
   consoleFlush()
 
 proc update(game: var Game, key: TKey) =
   game.player.update(game.bounds, key)
+  # for m in game.mobs:
+    # m.update(game.bounds, key)
 
 var game = newGame()
 

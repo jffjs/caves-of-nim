@@ -1,12 +1,23 @@
-import libtcod, geom
+import libtcod, geom, math
 
-type
-  Behavior = ref object of RootObj
-  Player = ref object of Behavior
-
+type Behavior = ref object of RootObj
 method update(this: Behavior, pos: Point, bounds: Rectangle, key: TKey): Point =
   pos
 
+type Wanderer = ref object of Behavior
+method update(this: Wanderer, pos: Point, bounds: Rectangle, key: TKey): Point =
+  var
+    offset = pos
+    offX = random(3) - 1
+    offY = random(3) - 1
+  offset = offset.offset(newPoint(offX, offY))
+
+  if bounds.contains(offset):
+    offset
+  else:
+    pos
+  
+type Player = ref object of Behavior
 method update(this: Player, pos: Point, bounds: Rectangle, key: TKey): Point =
   var offset = pos
   offset = case key.vk:
