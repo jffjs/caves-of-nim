@@ -1,18 +1,37 @@
-import libtcod
+import libtcod, actor, geom
 
-var
-  width = 80
-  height = 50
-  renderer = RENDERER_SDL
-  fullscreen = false
-  exit = false
+type
+  Game = object
+    exit: bool
+    bounds: Rectangle
+    player: Actor
+    
+proc newGame(): Game =
+  let
+    bounds = newRectangle(0, 0, 80, 50)
+    fullscreen = false
+    renderer = RENDERER_SDL
+  consoleInitRoot(bounds.width, bounds.height, "caves of nim", fullscreen, renderer)
 
-consoleInitRoot(width, height, "caves of nim", fullscreen, renderer)
+  var
+    player = newActor(40, 25, '@', WHITE)
+  Game(bounds: bounds, exit: false, player: player)
 
-while not (consoleIsWindowClosed() or exit):
+proc render(game: Game) =
   consoleClear(nil)
-  consolePutChar(nil, 40, 25, '@', BKGND_SET)
+  game.player.render()
   consoleFlush()
+
+proc update(game: var Game, key: TKey) =
+  game.player.update(game.bounds, key)
+
+var game = newGame()
+
+game.render()
+while not (consoleIsWindowClosed() or game.exit):
   var key = consoleWaitForKeypress(true);
   if key.vk == K_ESCAPE:
-    exit = true
+    game.exit = true
+
+  game.update(key)
+  game.render()
