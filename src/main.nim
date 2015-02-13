@@ -1,16 +1,5 @@
-import libtcod, math
+import libtcod
 
-type
-  Point = object
-    x: int
-    y: int
-  Bounds = object
-    min: Point
-    max: Point
-
-proc distance(p1: Point, p2: Point): float =
-  result = sqrt(float((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y)))
-      
 var
   width = 80
   height = 50
