@@ -1,10 +1,10 @@
 import libtcod, geom, math
 
-type Behavior = ref object of RootObj
+type Behavior* = ref object of RootObj
 method update(this: Behavior, pos: Point, bounds: Rectangle, key: TKey): Point =
   pos
 
-type Wanderer = ref object of Behavior
+type Wanderer* = ref object of Behavior
 method update(this: Wanderer, pos: Point, bounds: Rectangle, key: TKey): Point =
   var
     offset = pos
@@ -17,7 +17,7 @@ method update(this: Wanderer, pos: Point, bounds: Rectangle, key: TKey): Point =
   else:
     pos
   
-type Player = ref object of Behavior
+type Player* = ref object of Behavior
 method update(this: Player, pos: Point, bounds: Rectangle, key: TKey): Point =
   var offset = pos
   offset = case key.vk:
@@ -38,8 +38,8 @@ type Actor* = object
   color*: TColor
   behavior*: Behavior
 
-proc newActor*(x, y: int, glyph: char, color: TColor): Actor =
-  Actor(position: newPoint(x, y), glyph: glyph, color: color, behavior: Player())
+proc newActor*(x, y: int, glyph: char, color: TColor, behavior: Behavior): Actor =
+  Actor(position: newPoint(x, y), glyph: glyph, color: color, behavior: behavior)
 
 proc render*(actor: Actor) =
   consolePutCharEx(nil, actor.position.x, actor.position.y, actor.glyph, actor.color, BLACK)

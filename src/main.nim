@@ -15,8 +15,8 @@ proc newGame(): Game =
   consoleInitRoot(bounds.width, bounds.height, "caves of nim", fullscreen, renderer)
 
   var
-    player = newActor(40, 25, '@', WHITE)
-    dog = newActor(10, 10, 'd', DARK_AMBER)
+    player = newActor(40, 25, '@', WHITE, Player())
+    dog = newActor(10, 10, 'd', DARK_AMBER, Wanderer())
     mobs = @[dog]
   Game(bounds: bounds, exit: false, player: player, mobs: mobs)
 
@@ -29,8 +29,8 @@ proc render(game: Game) =
 
 proc update(game: var Game, key: TKey) =
   game.player.update(game.bounds, key)
-  # for m in game.mobs:
-    # m.update(game.bounds, key)
+  for i in 0..high(game.mobs):
+    game.mobs[i].update(game.bounds, key)
 
 var game = newGame()
 
