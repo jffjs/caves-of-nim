@@ -4,6 +4,11 @@ type Behavior* = ref object of RootObj
 method update(this: Behavior, pos: Point, wMap: Map, key: TKey): Point =
   pos
 
+type Aggro* = ref object of Behavior
+  radius: float32
+method update(this: Aggro, pos: Point, wMap: Map, key: TKey): Point =
+  echo "foo"
+
 type Wanderer* = ref object of Behavior
 method update(this: Wanderer, pos: Point, wMap: Map, key: TKey): Point =
   result = pos
