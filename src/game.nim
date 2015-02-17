@@ -7,6 +7,7 @@ type
     player*: Actor
     mobs*: seq[Actor]
     worldMap*: Map
+    state: GameState
     
 proc newGame*(): Game =
   let
@@ -21,18 +22,21 @@ proc newGame*(): Game =
     player = newActor(worldMap.findEmptyTile(newPoint(40, 25)), '@', WHITE, Player())
     dog = newActor(worldMap.findEmptyTile(newPoint(10, 10)), 'd', DARK_AMBER, Wanderer())
     mobs = @[dog]
+    state = newMovementState(worldMap)
 
-  Game(bounds: bounds, exit: false, player: player, mobs: mobs, worldMap: worldMap)
+  Game(bounds: bounds, exit: false, player: player, mobs: mobs, worldMap: worldMap, state: state)
 
 proc render*(game: var Game) =
   consoleClear(nil)
-  game.worldMap.render(game.bounds, game.player.position)
-  game.player.render(game.worldMap.viewOrigin)
-  for m in game.mobs:
-    m.render(game.worldMap.viewOrigin)
+  game.state.render(game.mobs, game.player)
   consoleFlush()
 
 proc update*(game: var Game, key: TKey) =
-  game.player.update(game.worldMap, key)
-  for i in 0..high(game.mobs):
-    game.mobs[i].update(game.worldMap, key)
+  let nextState  = game.state.update(game.mobs, game.player, key)
+  case nextState:
+    of State.Exit:
+      game.exit = true
+    of State.Movement:
+      game.state = newMovementState(game.worldMap)
+    else:
+      game.state = newMovementState(game.worldMap)
